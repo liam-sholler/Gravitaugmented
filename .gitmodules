@@ -1,0 +1,6 @@
+[submodule "external/augment"]
+	path = external/augment
+	url = https://github.com/Linifadomra/Augment
+[submodule "external/minhook"]
+	path = external/minhook
+	url = https://github.com/tsudakageyu/minhook.git
