@@ -15,6 +15,13 @@ add_library(minhook::minhook ALIAS minhook)
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/augment)
 
-add_executable(gravitas ${SOURCES})
-set_target_properties(gravitas PROPERTIES OUTPUT_NAME "Gravitaugmented")
-target_link_libraries(gravitas augment minhook)
+add_executable(robomo ${SOURCES})
+set_target_properties(robomo PROPERTIES OUTPUT_NAME "Gravitaugmented")
+target_link_libraries(robomo)
+
+add_library(intercept SHARED ${CMAKE_CURRENT_SOURCE_DIR}/src/intercept.cpp)
+target_link_libraries(intercept PRIVATE augment dbghelp minhook::minhook)
+
+set_target_properties(intercept PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
