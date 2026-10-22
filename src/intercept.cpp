@@ -47,9 +47,19 @@ using OriginalFn = void(*)();
 static OriginalFn original = nullptr;
 
 static void game_loop_hook(void) {
-    std::string path = "C:/Users/gci.252892/ProgramFiles/tmp/test_hook.txt";
-    std::string text = "Hooked game loop test!\n";
-    write_file(path, text);
+    // grab the game's struct offset location (dereference the ptr)
+    auto game_struct = *reinterpret_cast<uintptr_t*>(
+        grab_game_offset(GAME_STRUCT_OFFSET)
+    );
+
+    // grab the satisfaction float relative to that game offset
+    float* satisfaction_meter_float =
+        reinterpret_cast<float*>(game_struct + SATISFACTION_OFFSET);
+
+    // set it to max
+    *satisfaction_meter_float = 100.0f;
+    
+    // call the original function
     if (original != nullptr) {
         original();
     }
