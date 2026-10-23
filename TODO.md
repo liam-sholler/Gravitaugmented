@@ -9,3 +9,4 @@
 * Change duration of enlargement shroom
 * Change the speed of the robobros
 * Grass regrowth rate
+* Make always max satisfaction toggle and not permanent
