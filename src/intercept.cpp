@@ -32,9 +32,7 @@ static void enable_editor_overlay(void) {
 
         uint8_t* overlay_gate =
             reinterpret_cast<uint8_t*>(editor_struct + DEV_OVERLAY_OFFSET);
-        uint8_t* options_enabled =
-            reinterpret_cast<uint8_t*>(editor_struct + DEBUG_OPTIONS_ENABLED_OFFSET);
-
+    
         // enable the debug overlay editor code path
         *overlay_gate = 1;
     }
