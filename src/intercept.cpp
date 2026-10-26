@@ -60,15 +60,15 @@ static void draw_cheat_menu(void){
     static auto im_end = reinterpret_cast<ImGuiEndFn>(grab_game_offset(IMGUI_END_OFFSET));
     static auto im_checkbox = reinterpret_cast<ImGuiCheckboxFn>(grab_game_offset(IMGUI_CHECKBOX_OFFSET));
 
-    auto editor_struct = *reinterpret_cast<uintptr_t *>(grab_game_offset(GAME_EDITOR_PTR_OFFSET));
+    auto editor_struct = *reinterpret_cast<uintptr_t **>(grab_game_offset(GAME_EDITOR_PTR_OFFSET));
 
     // End() has to be called even when Begin() returns false (collapsed window)
     im_begin("Robomo Cheats", nullptr, 0);
 
     im_checkbox("lock satisfaction at max", &s_cheats.lockSatisfaction);
 
-    if (editor_struct != 0) {
-        im_checkbox("Dev overlay", reinterpret_cast<bool*>(editor_struct + DEV_OVERLAY_OFFSET));
+    if (editor_struct != nullptr) {
+        im_checkbox("Dev overlay", reinterpret_cast<bool*>(reinterpret_cast<uint8_t*>(editor_struct) + DEV_OVERLAY_OFFSET));
     }
 
     im_end();
@@ -78,13 +78,15 @@ static void game_loop_hook(void) {
     enable_editor_overlay();
 
     // grab the game's struct offset location (dereference the ptr)
-    auto game_struct = *reinterpret_cast<uintptr_t*>(
+    auto game_struct = *reinterpret_cast<uintptr_t **>(
         grab_game_offset(GAME_STRUCT_PTR_OFFSET)
     );
 
-    if (game_struct != 0 && s_cheats.lockSatisfaction) {
-        float* satisfaction_meter_float = reinterpret_cast<float*>(game_struct + SATISFACTION_OFFSET);
-        float max_satisfaction = *reinterpret_cast<float*>(game_struct + MAX_SATISFACTION_OFFSET);
+    if (game_struct != nullptr && s_cheats.lockSatisfaction) {
+        uint8_t* game_bytes = reinterpret_cast<uint8_t*>(game_struct);
+
+        float* satisfaction_meter_float = reinterpret_cast<float*>(game_bytes + SATISFACTION_OFFSET);
+        float max_satisfaction = *reinterpret_cast<float*>(game_bytes + MAX_SATISFACTION_OFFSET);
 
         // pin it to the level's real max (the game checks satistfaction == max)
         *satisfaction_meter_float = max_satisfaction;
